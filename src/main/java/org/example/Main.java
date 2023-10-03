@@ -1,19 +1,35 @@
 package org.example;
 
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
+
+import java.io.IOException;
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws IOException {
+        try {
+            TerminalSize terminalSize = new TerminalSize(40, 20);
+            DefaultTerminalFactory terminalFactory = new
+                    DefaultTerminalFactory().setInitialTerminalSize(terminalSize);
+            Terminal terminal = terminalFactory.createTerminal();
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+            Screen screen = null;
+            screen = new TerminalScreen(terminal);
+            screen.setCursorPosition(null); // we don't need a cursor
+            screen.startScreen(); // screens must be started
+            screen.doResizeIfNecessary(); // resize screen if necessary
+            screen.clear();
+            screen.setCharacter(10, 10, TextCharacter.fromCharacter('X')
+                    [0]);
+            screen.refresh();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
