@@ -15,21 +15,34 @@ public class Arena {
     private Hero hero;
     private List<Wall> walls;
     private List<Coin> coins;
+    private List<Monster> monsters;
     public Arena(int col, int row, Hero hero1){
         height = row;
         width = col;
         hero = hero1;
         this.walls = createWalls();
         this.coins = createCoins();
+        this.monsters = createMonters();
 
     }
     private List<Coin> createCoins() {
         Random random = new Random();
         ArrayList<Coin> coins = new ArrayList<>();
         for (int i = 0; i < 5; i++){
-            coins.add(new Coin(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
+            int coin_width = random.nextInt(width-2)+1;
+            int coin_height = random.nextInt(height-2)+1;
+            boolean add = true;
+            if (new Position(coin_width,coin_height).equals(hero.getPosition()))add = false;
+            if (add) coins.add(new Coin(coin_width, coin_height));
         }
         return coins;
+    }
+    private List<Monster> createMonters() {
+        Random random = new Random();
+        ArrayList<Monster> monsters = new ArrayList<>();
+        for (int i = 0; i < 7; i++)
+            monsters.add(new Monster(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
+        return monsters;
     }
     private List<Wall> createWalls()  {
         List<Wall> walls = new ArrayList<>();
@@ -50,26 +63,32 @@ public class Arena {
         hero.draw(graphics);
         for (Wall wall : walls) wall.draw(graphics);
         for (Coin coin: coins) coin.draw(graphics);
+        for (Monster monster: monsters) monster.draw(graphics);
     }
     public boolean processKey(KeyStroke key, Screen screen) throws IOException {
         System.out.println(key);
         if (key.getKeyType() == KeyType.ArrowUp){
             moveHero(hero.moveUp());
+            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.ArrowDown){
             moveHero(hero.moveDown());
+            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.ArrowRight){
             moveHero(hero.moveRight());
+            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.ArrowLeft){
             moveHero(hero.moveLeft());
+            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q'){
             screen.close();
         } else if (key.getKeyType() == KeyType.EOF) {
             return false;
         }
+        if(verifyMonsterColision())return false;
         return true;
     }
     public void moveHero(Position position) {
@@ -94,6 +113,18 @@ public class Arena {
                 return;
             }
         }
+    }
+    public void moveMonsters(){
+        for(Monster monster :monsters){
+            Position position = monster.move();
+            if (canHeroMove(position))monster.setPosition(position);
+        }
+    }
+    public boolean verifyMonsterColision( ){
+        for(Monster monster :monsters){
+            if(monster.getPosition().equals(hero.getPosition()))return true;
+        }
+        return false;
     }
 
 }
