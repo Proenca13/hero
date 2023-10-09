@@ -42,6 +42,11 @@ public class Game {
             draw();
             KeyStroke key = screen.readInput();
             run = processKey(key);
+            arena.moveMonsters();
+            if(arena.verifyMonsterColision()){
+                System.out.println("Bateu em um monstro.GAME OVER");
+                screen.close();
+            }
 
         }
     }

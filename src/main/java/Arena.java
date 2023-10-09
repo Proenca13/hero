@@ -69,26 +69,21 @@ public class Arena {
         System.out.println(key);
         if (key.getKeyType() == KeyType.ArrowUp){
             moveHero(hero.moveUp());
-            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.ArrowDown){
             moveHero(hero.moveDown());
-            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.ArrowRight){
             moveHero(hero.moveRight());
-            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.ArrowLeft){
             moveHero(hero.moveLeft());
-            moveMonsters();
         }
         else if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q'){
             screen.close();
         } else if (key.getKeyType() == KeyType.EOF) {
             return false;
         }
-        if(verifyMonsterColision())return false;
         return true;
     }
     public void moveHero(Position position) {
